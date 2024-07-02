@@ -1,5 +1,3 @@
-# test_robot_logic.py
-
 import unittest
 from unittest.mock import MagicMock
 from robot_logic import MonitorBatteryAndCollision, RotateBase, StopMotion
@@ -69,15 +67,39 @@ class TestStopMotion(unittest.TestCase):
         self.assertEqual(self.state.battery_threshold, 50.0)
 
     def test_execute_manual_reset(self):
-        userdata = {'battery_level': 80, 'collision_detected': True}
+        userdata = {'battery_level': 80}
         self.node.get_parameter().get_parameter_value().bool_value = True
         outcome = self.state.execute(userdata)
         self.assertEqual(outcome, 'manual_reset')
 
     def test_execute_low_battery(self):
-        userdata = {'battery_level': 45, 'collision_detected': True}
+        userdata = {'battery_level': 29}
         outcome = self.state.execute(userdata)
         self.assertEqual(outcome, 'low_battery')
+
+    def test_execute_waiting_for_manual_reset(self):
+        userdata = {'battery_level': 80}
+        self.node.get_parameter().get_parameter_value().bool_value = False
+        self.node.create_publisher().publish = MagicMock()
+
+        # Run execute in a separate thread to simulate the while loop waiting
+        import threading
+        result = []
+
+        def execute_state():
+            outcome = self.state.execute(userdata)
+            result.append(outcome)
+
+        thread = threading.Thread(target=execute_state)
+        thread.start()
+
+        # Let the loop run for a short time and then simulate a manual reset
+        import time
+        time.sleep(1)
+        self.node.get_parameter().get_parameter_value().bool_value = True
+        thread.join(timeout=2)
+
+        self.assertEqual(result[0], 'manual_reset')
 
 if __name__ == '__main__':
     unittest.main()

@@ -141,7 +141,7 @@ class StopMotion(smach.State):
         
         smach.State.__init__(self, outcomes=['manual_reset', 'low_battery'], 
                              output_keys=['battery_level'], 
-                             input_keys=['collision_detected','battery_level'])
+                             input_keys=['battery_level'])
         self.node = node
         self.cmd_pub = self.node.create_publisher(Twist, '/cmd_vel', 10)
         self.battery_pub = self.node.create_publisher(Float32, '/battery_level', 10)
