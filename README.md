@@ -1,6 +1,13 @@
 # AST_SS24
 Repository for AST_SS24 assignment projects
 
+## Team Members
+
+- Alisha
+- Maira
+- Khawaja Saad
+- Subash 
+
 # Project Setup
 
 ## Prerequisites
@@ -10,7 +17,7 @@ Repository for AST_SS24 assignment projects
 
 ## Installation
 
-### Step 1: Install ROS 2 Packages
+### Install ROS 2 Packages
 
 Install the required ROS 2 packages for `smach`:
 
@@ -22,4 +29,12 @@ Install required libraries from the requirements.txt file:
 
 ```
 pip install -r requirements.txt
+```
+
+## Script Execution
+
+Run the following command to run the test files:
+
+```
+python3 -m unittest test_robot_logic.py 
 ```
